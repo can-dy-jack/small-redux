@@ -1,6 +1,9 @@
-import { createStore, combineReducers } from '../lib/index.js';
+import { createStore, applyMiddleware } from '../lib/index.js';
 import asserts from 'assert';
 
+let counter = {
+    count: 0 
+};
 function counterReducer (state, action) {
     switch (action.type) {
         case 'IN':
@@ -11,42 +14,29 @@ function counterReducer (state, action) {
             return state;
     }
 }
-function todosReducer (state, action) {
-    switch (action.type) {
-        case 'add':
-            return { list: [...state.list, action.payload ] };
-        case 'remove':
-            return { list: state.list.slice(0, state.list.length -1 ) };
-        default:
-            return state;
+const loggerMiddleware = store => next => action => {
+    console.log('this state', store.getState());
+    console.log('action', action);
+    next(action);
+    console.log('next state', store.getState());
+}
+const exceptionMiddleware = store => next => action => {
+    try {
+        next(action);
+    } catch (err) {
+        console.error('错误报告: ', err)
     }
 }
-const reducer = combineReducers({
-    counter: counterReducer,
-    todos: todosReducer
-});
-const { subscribe, dispatch, getState } = createStore(
-    { 
-        counter: {
-            count: 0 
-        },
-        todos: {
-            list: []
-        }
-    },
-    reducer
-);
-let count = 0, todos = [];
-subscribe(() => {
-    let val = getState();
-    count = val.counter.count;
-    todos = val.todos.list;
+const rewriteCreateStoreFunc = applyMiddleware(exceptionMiddleware, loggerMiddleware);
+const newCreateStore = rewriteCreateStoreFunc(createStore);
+const store = newCreateStore(counter, counterReducer);
+
+// test
+let count = 0;
+store.subscribe(() => {
+    let val = store.getState();
+    count = val.count;
     console.log(`\x1b[32m${JSON.stringify(val, null, 4)}\x1b[0m`)
 })
-
-dispatch({ type: 'IN' });
+store.dispatch({ type: 'IN' });
 asserts.equal(count, 1);
-asserts.deepEqual(todos, []);
-dispatch({ type: 'add', payload: 'change reducer' });
-asserts.equal(count, 1);
-asserts.deepEqual(todos, ['change reducer']);
