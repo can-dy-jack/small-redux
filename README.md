@@ -67,3 +67,23 @@ export function combineReducers(reducers) {
 }
 ```
 
+### 实现有中间件的 `createStore`
+```js
+// const Middleware = store => next => action => {}
+// const newCreateStore  = applyMiddleware(Middleware1, Middleware2, Middleware3)(createStore)
+export function applyMiddleware(...middlewares) {
+    return function rewriteCreateStore(oldCreateStore) {
+        return function newCreateStore(initialState, reducer) {
+            const store = oldCreateStore(initialState, reducer);
+            const chain = middlewares.map(middleware => middleware(store));
+            let next = store.dispatch;
+            chain.reverse().forEach(middlewareWithStore => {
+                next = middlewareWithStore(next);
+            })
+            store.dispatch = next;
+            return store;
+        }
+    }
+}
+```
+

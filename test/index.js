@@ -28,8 +28,7 @@ const exceptionMiddleware = store => next => action => {
     }
 }
 const rewriteCreateStoreFunc = applyMiddleware(exceptionMiddleware, loggerMiddleware);
-const newCreateStore = rewriteCreateStoreFunc(createStore);
-const store = newCreateStore(counter, counterReducer);
+const store = createStore(counter, counterReducer, rewriteCreateStoreFunc);
 
 // test
 let count = 0;
