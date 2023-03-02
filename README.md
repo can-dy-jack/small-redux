@@ -1,4 +1,4 @@
-# small-redux
+# small-redux [![Node Test](https://github.com/can-dy-jack/small-redux/actions/workflows/node.js.yml/badge.svg)](https://github.com/can-dy-jack/small-redux/actions/workflows/node.js.yml)
 > the basic implementation of redux.
 
 参考文章：[完全理解 redux（从零实现一个 redux）#22](https://github.com/brickspert/blog/issues/22)
@@ -50,7 +50,7 @@ export default function createStore(initialState, reducer) {
     }
 }
 ```
-### 实现combineReducers
+### 实现 `combineReducers`
 ```js
 export function combineReducers(reducers) {
     const reducerKeys = Object.keys(reducers);
