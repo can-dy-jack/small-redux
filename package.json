@@ -1,0 +1,9 @@
+{
+  "name": "small-redux",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:can-dy-jack/small-redux.git",
+  "author": "can-dy-jack <jjack_chen3@163.com>",
+  "license": "MIT",
+  "type": "module"
+}
