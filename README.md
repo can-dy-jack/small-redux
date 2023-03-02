@@ -50,5 +50,20 @@ export default function createStore(initialState, reducer) {
     }
 }
 ```
-
+### 实现combineReducers
+```js
+export function combineReducers(reducers) {
+    const reducerKeys = Object.keys(reducers);
+    return function combinationReducer(state = {}, action) {
+        const nextState = {};
+        for (let key of reducerKeys) {
+            const reducer = reducers[key];
+            const pre = state[key];
+            const next = reducer(pre, action);
+            nextState[key] = next;
+        }
+        return nextState;
+    }
+}
+```
 
