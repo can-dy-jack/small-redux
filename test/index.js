@@ -37,5 +37,14 @@ store.subscribe(() => {
     count = val.count;
     console.log(`\x1b[32m${JSON.stringify(val, null, 4)}\x1b[0m`)
 })
+let unsub = store.subscribe(() => {
+    let val = store.getState();
+    console.log(`\x1b[35m${JSON.stringify(val, null, 4)}\x1b[0m`)
+})
+store.subscribe(() => {
+    let val = store.getState();
+    console.log(`\x1b[35m${JSON.stringify(val, null, 4)}\x1b[0m`)
+})
+unsub();
 store.dispatch({ type: 'IN' });
 asserts.equal(count, 1);
